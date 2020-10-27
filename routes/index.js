@@ -1,8 +1,7 @@
-const { required } = require('@hapi/joi');
 const express = require('express');
 const router = express.Router();
 const users = require('./users');
-const hotels = required('hotels');
+const hotels = require('./hotels');
 const rooms = require('./rooms');
 const HotelController = require('../app/controllers/HotelController');
 

@@ -34,6 +34,11 @@ const userSchema = new Schema({
   location_str: {
     type: String,
     required: false
+  },
+  verified: {
+    type: Boolean,
+    required: false,
+    default: false
   }
 }, { timestamps: true });
 
