@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 /** 
  * Sign up the user
  * validate first
+ * check email existence
  * generate hash password
  * save it to database
 */
@@ -15,10 +16,15 @@ const signup = async (req, res) => {
         return res.status(422).send(error.details[0].message);
     }
 
+    let user = await User.findOne({ email: req.body.email });
+    if(user) {
+        return res.status(409).send("Already exist");
+    }
+
     const salt = await bcrypt.genSalt(10);
     req.body.password = await bcrypt.hash(req.body.password, salt);
 
-    let user = new User(req.body);
+    user = new User(req.body);
     user.save().then(response => {
         res.status(200).send(response);
     })
@@ -27,7 +33,13 @@ const signup = async (req, res) => {
     })
 }
 
-
+/** 
+ * Sign in the user
+ * validate first
+ * get the user with email
+ * match the password
+ * generate jwt token
+*/
 const signin = async (req, res) => {
     const { error } = userValidation.signinValidation.validate(req.body);
     if(error) {
