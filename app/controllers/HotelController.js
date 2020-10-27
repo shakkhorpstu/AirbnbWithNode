@@ -39,17 +39,25 @@ const store = async (req, res) => {
     }
 
     let data = req.body;
+    let image = '';
 
-    let image = await uploadFile(req.files);
-    
-    console.log('outside')
-    let hotel = new Hotel(data);
-    hotel.save().then(response => {
-        res.status(200).send(response);
-    })
-    .catch(err => {
-        res.status(500).send(err);
-    })
+    try {
+        image = await uploadFile(req.files);
+    } catch (err) {
+        res.send(err);
+    }
+
+    try {
+        console.log('outside', image);
+        let hotel = new Hotel(data);
+        await hotel.save().then(response => {
+            res.status(200).send(response);
+        }).catch(err => {
+            res.status(500).send(err);
+        })
+    } catch (err) {
+        res.send(err);
+    }
 }
 
 const update = (req, res) => {
@@ -64,16 +72,12 @@ const uploadFile = async (files) => {
     let image = '';
     if (files || Object.keys(files).length >= 0) {
         let sampleFile = files.file;
-        sampleFile.mv('public/images/hotels/filename.jpg', function(err) {
-            if (err) {
-                return res.status(500).send(err);
-            }
-            else {
-                image = 'filename';
-                console.log('image')
-            }
+        await sampleFile.mv('public/images/hotels/filename.jpg', function(err) {
+            image = 'filename';
+            console.log('after')
         });
     }
+
     return image;
 }
 
