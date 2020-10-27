@@ -16,7 +16,7 @@ var app = express();
 const dbURI = process.env.MONGO_DB_SERVER;
 
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(result => console.log('Good to go'))
+  .then(result => console.log('Connected'))
   .catch(err => console.log(err));
 
 // view engine setup

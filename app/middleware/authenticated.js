@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 
-const verify = (req, res, next) => {
-    const token = req.header('auth-token');
+const verifyToken = (req, res, next) => {
+    const bearerToken = req.header('Authorization');
+    const token = bearerToken && bearerToken.split(' ')[1];
     if(!token) {
         res.status(401).send('Unauthorized');
     }
@@ -19,5 +20,5 @@ const verify = (req, res, next) => {
 }
 
 module.exports = {
-    verify
+    verifyToken
 }
