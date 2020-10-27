@@ -1,11 +1,15 @@
-var express = require('express');
-var router = express.Router();
-var usersRouter = require('./users');
+const { required } = require('@hapi/joi');
+const express = require('express');
+const router = express.Router();
+const users = require('./users');
+const hotels = required('hotels');
+const rooms = require('./rooms');
+const HotelController = require('../app/controllers/HotelController');
 
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+router.get('/', HotelController.index);
 
-router.use('/users', usersRouter);
+router.use('/users', users);
+router.use('/hotels', hotels);
+router.use('/rooms', rooms);
 
 module.exports = router;

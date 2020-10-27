@@ -2,40 +2,32 @@ const { required } = require('@hapi/joi');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
-  first_name: {
+const hotelSchema = new Schema({
+  title: {
     type: String,
     required: true,
   },
-  last_name: {
+  lat: {
     type: String,
     required: false,
   },
-  email: {
+  lng: {
+    type: String,
+    required: false
+  },
+  city: {
     type: String,
     required: true
   },
-  password: {
+  country: {
     type: String,
     required: false
   },
   image: {
     type: String,
     required: false
-  },
-  lat: {
-    type: String,
-    required: false
-  },
-  lng: {
-    type: String,
-    required: false
-  },
-  location_str: {
-    type: String,
-    required: false
   }
 }, { timestamps: true });
 
-const User = mongoose.model('User', userSchema);
-module.exports = User;
+const Hotel = mongoose.model('Hotel', hotelSchema);
+module.exports = Hotel;
