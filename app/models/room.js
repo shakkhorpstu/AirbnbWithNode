@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const roomSchema = new Schema({
   title: {
     type: String,
-    required: false,
+    required: true,
   },
   hotel: {
     type: {

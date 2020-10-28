@@ -1,5 +1,7 @@
+const fs = require('fs');
 const Hotel = require('../models/hotel');
 const hotelValidation = require('../validation/hotel');
+const helper = require('../helpers/upload');
 
 /** 
  * Get all the hotels with descending order
@@ -28,7 +30,7 @@ const show = (req, res) => {
 }
 
 /** 
- * Store a new hotel to database
+ * Store new hotel to database
  * validate the data
  * save into 
 */
@@ -38,18 +40,14 @@ const store = async (req, res) => {
         return res.status(422).send(error.details[0].message);
     }
 
-    let data = req.body;
-    let image = '';
-
     try {
-        image = await uploadFile(req.files);
+        req.body.image = await helper.fileUpload(req.files, 'public/images/hotels');
     } catch (err) {
-        res.send(err);
+        console.log(err);
     }
 
     try {
-        console.log('outside', image);
-        let hotel = new Hotel(data);
+        let hotel = new Hotel(req.body);
         await hotel.save().then(response => {
             res.status(200).send(response);
         }).catch(err => {
@@ -60,25 +58,57 @@ const store = async (req, res) => {
     }
 }
 
-const update = (req, res) => {
-    res.send('update');
-}
-
-const destroy = (req, res) => {
-    res.send('destroy');
-}
-
-const uploadFile = async (files) => {
-    let image = '';
-    if (files || Object.keys(files).length >= 0) {
-        let sampleFile = files.file;
-        await sampleFile.mv('public/images/hotels/filename.jpg', function(err) {
-            image = 'filename';
-            console.log('after')
-        });
+/** 
+ * Update a hotel
+ * validate the data
+ * update db 
+*/
+const update = async (req, res) => {
+    const { error } = hotelValidation.hotelSchema.validate(req.body);
+    if(error) {
+        return res.status(422).send(error.details[0].message);
     }
 
-    return image;
+    try {
+        if(req.files) {
+            req.body.image = await helper.fileUpload(req.files, 'public/images/hotels');
+        }
+    } catch (err) {
+        console.log(err);
+    }
+
+    try {
+        Hotel.findOneAndUpdate(
+            { _id: req.params.id },
+            req.body
+        ).then(response => {
+            if(req.body.image && response.image) {
+                fs.unlinkSync(response.image);
+            }
+            Hotel.findById(req.params.id).then(data => {
+                res.status(200).send(data);
+            });
+        }).catch(err => {
+            res.status(500).send(err);
+        });
+    } catch (err) {
+        res.send(err);
+    }
+}
+
+/** 
+ * Delete the data
+*/
+const destroy = (req, res) => {
+    Hotel.findOneAndDelete({ _id: req.params.id }).then(response => {
+        if(response.image) {
+            fs.unlinkSync(response.image);
+        }
+        res.status(200).send(response);
+    })
+    .catch(err => {
+        res.status(500).send(err);
+    });
 }
 
 module.exports = {

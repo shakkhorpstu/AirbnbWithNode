@@ -15,7 +15,7 @@ var app = express();
 // connect to mongodb & listen for requests
 const dbURI = process.env.MONGO_DB_SERVER;
 
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
   .then(result => console.log('Connected'))
   .catch(err => console.log(err));
 
