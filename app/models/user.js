@@ -39,6 +39,10 @@ const userSchema = new Schema({
     type: Boolean,
     required: false,
     default: false
+  },
+  verify_token: {
+    type: String,
+    required: false
   }
 }, { timestamps: true });
 

@@ -4,7 +4,7 @@ const verifyToken = (req, res, next) => {
     const bearerToken = req.header('Authorization');
     const token = bearerToken && bearerToken.split(' ')[1];
     if(!token) {
-        res.status(401).send('Unauthorized');
+        return res.status(401).send('Unauthorized');
     }
 
     try {
@@ -15,10 +15,9 @@ const verifyToken = (req, res, next) => {
 
         next();
     } catch(err) {
-        res.status(400).send('Unauthorized');
+        return res.status(400).send('Unauthorized');
     }
 }
-
 module.exports = {
     verifyToken
 }

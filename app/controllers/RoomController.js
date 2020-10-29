@@ -33,7 +33,13 @@ const show = (req, res) => {
  * Get rooms matching with hotel
 */
 const getRoomByHotel = (req, res) => {
-    res.send('room by hotel');
+    Room.find({ hotel_id: req.params.id })
+    .then(response => {
+        res.status(200).send(response);
+    })
+    .catch(err => {
+        res.status(500).send(err);
+    })
 }
 
 /** 
@@ -46,9 +52,11 @@ const store = async (req, res) => {
     if(error) {
         return res.status(422).send(error.details[0].message);
     }
-
+    console.log(req.body)
     try {
-        req.body.image = await helper.fileUpload(req.files, 'public/images/rooms');
+        if(req.files) {
+            req.body.image = await helper.fileUpload(req.files, 'public/images/rooms');
+        }
     } catch (err) {
         console.log(err);
     }

@@ -6,7 +6,7 @@ const roomSchema = Joi.object({
     room_number: Joi.string(),
     image: Joi.string(),
     hotel_id: Joi.string(),
-    hotel: Joi.string()
+    hotel: Joi.object()
 });
 
 module.exports = {
